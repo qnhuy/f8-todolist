@@ -41,8 +41,10 @@
         <!-- Controls Section -->
         <div class="controls">
             <div class="search-container">
-                <i class="fa-solid fa-magnifying-glass fa-icon search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search List">
+                <label for="searchInput">    
+                    <i class="fa-solid fa-magnifying-glass fa-icon search-icon"></i>
+                </label>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Task Here!">
             </div>
 
             <button class="add-btn">
@@ -54,8 +56,9 @@
         <!-- Tabs -->
         <div class="tabs">
             <div class="tab-list">
-                <button class="tab-button active">Active Task</button>
-                <button class="tab-button">Completed</button>
+                <button id="allTask" class="tab-button active">All Task</button>
+                <button id="activeTask" class="tab-button">Active Task</button>
+                <button id="completedTask" class="tab-button">Completed Task</button>
             </div>
         </div>
 

@@ -10,6 +10,11 @@ const modalSubmitBtn = $('.modal-submit')
 const addTaskForm = $('#todo-app-form')
 const taskGrid = $('.task-grid')
 const modalTitle = $('.modal-title')
+const showAllTaskBtn = $('#allTask')
+const showActiveTaskBtn = $('#activeTask')
+const showCompletedTaskBtn = $('#completedTask')
+const searchBar = $('.search-container')
+const searchInput = $('.search-input')
 
 let editing = false
 let marking = false
@@ -84,6 +89,14 @@ function handleSubmitTask(e) {
     // get form data
     const newTask = Object.fromEntries(new FormData(addTaskForm))
 
+    // check if title is duplicated
+    const isDuplicateTitle = !taskList.every(task => task.taskTitle !== newTask.taskTitle)
+    if (isDuplicateTitle) {
+        window.alert('Title is duplicate!')
+        modalTitle.focus()
+        return
+    }
+
     saveTask(newTask) //save task to task list
     setTimeout(() => addTaskForm.reset(), 200) //reset modal form
     renderTask(newTask) //render task
@@ -97,7 +110,7 @@ function saveTask(task) {
         // editing task is a new task, dont have id and completed state
         // assign id for editing task
         !task.id ? task.id = actioningElementId : ''
-        
+
         for (let i = 0; i < taskList.length; i++) {
             if (taskList[i].id === task.id) {
                 // reassign completed state for editing task
@@ -220,7 +233,7 @@ function handleMarkTask(markBtn) {
     // toggle content of edit button
     if (markingTaskEle.classList.contains('completed')) {
         markingTask.isCompleted = true
-        markBtn.textContent = 'Mark as Active' 
+        markBtn.textContent = 'Mark as Active'
     } else {
         markingTask.isCompleted = false
         markBtn.textContent = 'Mark as Completed'
@@ -251,4 +264,34 @@ function findTaskById(id) {
 // find task element in task grid by id
 function findTaskElementById(id) {
     return taskGrid.querySelector(`[data-id="${id}"]`)
+}
+
+const showTaskBtns = [showAllTaskBtn, showActiveTaskBtn, showCompletedTaskBtn]
+showTaskBtns.forEach(btn => btn.onclick = () => handleShowTask(btn))
+
+// show task base on clicked btn
+function handleShowTask(btn) {
+    taskGrid.innerHTML = ''
+
+    // handle active state of buttons
+    showTaskBtns.forEach(btn => btn.classList.remove('active'))
+    btn.classList.add('active')
+
+    // render tasks base on clicked button
+    if (btn === showAllTaskBtn) {
+        taskList.forEach(task => renderTask(task))
+    } else if (btn === showActiveTaskBtn) {
+        taskList.forEach(task => !task.isCompleted ? renderTask(task) : '')
+    } else if (btn === showCompletedTaskBtn) {
+        taskList.forEach(task => task.isCompleted ? renderTask(task) : '')
+    }
+}
+
+// show all task at first when about to search
+searchBar.onclick = () => handleShowTask(showAllTaskBtn)
+
+// handle search task
+searchInput.oninput = () => {
+    taskGrid.innerHTML = ''
+    taskList.forEach(task => task.taskTitle.includes(searchInput.value) ? renderTask(task) : '')
 }
