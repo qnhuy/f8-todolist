@@ -15,6 +15,7 @@ const showActiveTaskBtn = $('#activeTask')
 const showCompletedTaskBtn = $('#completedTask')
 const searchBar = $('.search-container')
 const searchInput = $('.search-input')
+const toast = $('#toast')
 
 let editing = false
 let marking = false
@@ -92,7 +93,7 @@ function handleSubmitTask(e) {
     // check if title is duplicated
     const isDuplicateTitle = !taskList.every(task => task.taskTitle !== newTask.taskTitle)
     if (isDuplicateTitle) {
-        window.alert('Title is duplicate!')
+        window.alert(`Title ${newTask.taskTitle} is duplicate!`)
         modalTitle.focus()
         return
     }
@@ -118,10 +119,14 @@ function saveTask(task) {
                 taskList[i] = task // replace task
             }
         }
+
+        // show toast if editing
+        if (editing) showToastMessage('Edit task successfully!')
     } else { // action if task is new
         task.isCompleted = false
         task.id = taskList.length + 1
         taskList.push(task)
+        showToastMessage('Add task successfully!')
     }
 
     localStorage.setItem('taskList', JSON.stringify(taskList))
@@ -248,12 +253,18 @@ function handleDeleteTask() {
     // get delete task element
     const deleteTaskEle = findTaskElementById(actioningElementId)
 
-    // delete task by reassign task list to a new filterd task list
-    taskList = taskList.filter(task => task.id !== deleteTask.id)
-    // delete task in task grid
-    deleteTaskEle.remove()
+    if (window.confirm(`Are you sure to delete task ${deleteTask.taskTitle}`)) {
+        // delete task by reassign task list to a new filterd task list
+        taskList = taskList.filter(task => task.id !== deleteTask.id)
+        // delete task in task grid
+        deleteTaskEle.remove()
 
-    localStorage.setItem('taskList', JSON.stringify(taskList))
+        // show toast message if delete successfulle
+        deleteTaskEle ? showToastMessage('Delete task successfully!') : ''
+
+        localStorage.setItem('taskList', JSON.stringify(taskList))
+    }
+
 }
 
 // find task in task list by id
@@ -267,10 +278,10 @@ function findTaskElementById(id) {
 }
 
 const showTaskBtns = [showAllTaskBtn, showActiveTaskBtn, showCompletedTaskBtn]
-showTaskBtns.forEach(btn => btn.onclick = () => handleShowTask(btn))
+showTaskBtns.forEach(btn => btn.onclick = () => handleSearchTask(btn))
 
 // show task base on clicked btn
-function handleShowTask(btn) {
+function handleSearchTask(btn) {
     taskGrid.innerHTML = ''
 
     // handle active state of buttons
@@ -288,10 +299,16 @@ function handleShowTask(btn) {
 }
 
 // show all task at first when about to search
-searchBar.onclick = () => handleShowTask(showAllTaskBtn)
+searchBar.onclick = () => handleSearchTask(showAllTaskBtn)
 
 // handle search task
 searchInput.oninput = () => {
     taskGrid.innerHTML = ''
     taskList.forEach(task => task.taskTitle.includes(searchInput.value) ? renderTask(task) : '')
+}
+
+function showToastMessage(message) {
+    const toastComponent = document.createElement('toast-message')
+    toast.appendChild(toastComponent)
+    toastComponent.show(message)
 }

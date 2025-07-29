@@ -1719,3 +1719,9 @@ body {
     text-align: center;
   }
 }
+
+#toast {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}

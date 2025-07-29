@@ -41,7 +41,7 @@
         <!-- Controls Section -->
         <div class="controls">
             <div class="search-container">
-                <label for="searchInput">    
+                <label for="searchInput">
                     <i class="fa-solid fa-magnifying-glass fa-icon search-icon"></i>
                 </label>
                 <input type="text" id="searchInput" class="search-input" placeholder="Search Task Here!">
@@ -152,6 +152,86 @@
         </div>
     </div>
 
+    <template id="toastMessageTpl">
+        <!-- Font Awesome CDN -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            h3,
+            p {
+                padding: 0;
+                margin: 0;
+            }
+
+            .toast {
+                display: flex;
+                width: 270px;
+                margin: 12px;
+                background-color: rgb(255, 255, 255);
+                box-shadow: 0 0 2px #b1b1b1;
+                border-radius: 4px;
+                padding: 6px 12px;
+                align-items: center;
+                animation: slideRightIn 0.3s ease, fadeOut 1s linear 3s forwards;
+            }
+
+            @keyframes slideRightIn {
+                from {
+                    transform: translateX(calc(100% + 12px));
+                }
+
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+
+            /* .toast:has(> .success) {
+                background-color: rgb(214, 255, 214);
+            } */
+
+            .toast-icon {
+                transform: translateY(2px);
+                font-size: 0.9rem;
+                margin-right: 10px;
+            }
+
+            .toast-icon.success {
+                color: rgba(0, 128, 0, 0.62);
+            }
+
+            .toast-content {
+                flex-grow: 1;
+                font-size: 0.8rem;
+            }
+
+            .toast-close {
+                font-size: 1.3rem;
+                padding: 4px 4px 4px 8px;
+            }
+
+            .toast-close:hover {
+                opacity: 0.5;
+            }
+        </style>
+
+        <div class="toast">
+            <i class="toast-icon success fa-solid fa-circle-check"></i>
+            <p class="toast-content"></p>
+            <i class="toast-close success fa-solid fa-xmark"></i>
+        </div>
+    </template>
+
+    <!-- Toast Message -->
+    <div id="toast">
+    </div>
+
+    <script src="./toast-message.js"></script>
     <script src="./main.js"></script>
 </body>
 
